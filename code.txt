@@ -1,0 +1,429 @@
+# Analyse des données Netflix
+
+Ce notebook présente une analyse du catalogue Netflix basée sur les données du fichier `netflix_titles.csv`.  
+Nous allons explorer l'évolution des contenus ajoutés au fil du temps, les types de contenus, les genres, et plus encore.
+
+---
+
+## 1. Importation des bibliothèques et chargement des données
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Charger les données
+df = pd.read_csv(r"C:\Users\demba\Desktop\netflix_titles.csv.zip")
+
+# Nettoyer la colonne date_added
+df['date_added'] = df['date_added'].astype(str).str.strip()
+df['date_added'] = pd.to_datetime(df['date_added'], errors='coerce')
+
+# Créer des colonnes année et mois pour les analyses temporelles
+df['year_added'] = df['date_added'].dt.year
+df['month_added'] = df['date_added'].dt.month
+df['year_month'] = df['date_added'].dt.to_period('M')
+
+# Aperçu des données
+print("Dimensions :", df.shape)
+df.head()
+
+
+
+
+# Supprimer les espaces autour des dates
+df['date_added'] = df['date_added'].astype(str).str.strip()
+
+# Convertir en datetime (format libre, Pandas s'adapte)
+df['date_added'] = pd.to_datetime(df['date_added'], errors='coerce')  # 'coerce' remplace les dates invalides par NaT
+
+
+
+df['year_added'] = df['date_added'].dt.year
+df['month_added'] = df['date_added'].dt.month
+import os
+
+
+
+## 2. Analyse temporelle des ajouts
+
+Nous allons analyser comment le catalogue Netflix a évolué au fil des années.
+# Crée un dossier 'images' dans ton projet si pas déjà fait
+os.makedirs('images', exist_ok=True)
+
+# Graphique avec taille réduite
+df_year.plot(kind='bar', stacked=True, colormap='Set2', figsize=(8,4))
+
+plt.title("Contenus ajoutés sur Netflix par an")  # Emoji retiré pour éviter warning
+plt.xlabel("Année")
+plt.ylabel("Nombre de titres")
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+# Sauvegarde dans le dossier 'images'
+plt.savefig("images/netflix_ajouts_par_an.png", dpi=150, bbox_inches='tight')
+
+plt.show()
+
+
+
+## 3. Analyse spécifique aux films
+
+Focus sur l’évolution des films ajoutés.
+films = df[df['type'] == 'Movie']
+films_per_year = films.groupby('year_added').size()
+
+films_per_year.plot(kind='line', marker='o', color='red', figsize=(10,5))
+plt.title("Films ajoutés chaque année")
+plt.xlabel("Année")
+plt.ylabel("Nombre de films")
+plt.grid(True)
+plt.show()
+
+
+
+## 4. Analyse spécifique aux séries
+
+Focus sur l’évolution des séries ajoutées.
+series = df[df['type'] == 'TV Show']
+series_per_year = series.groupby('year_added').size()
+
+series_per_year.plot(kind='line', marker='o', color='blue', figsize=(10,5))
+plt.title("Séries ajoutées chaque année")
+plt.xlabel("Année")
+plt.ylabel("Nombre de séries")
+plt.grid(True)
+plt.show()
+
+
+
+
+## 5. Analyse mensuelle des ajouts
+
+Observation des ajouts mensuels pour détecter des tendances saisonnières.
+monthly = df.groupby('year_month').size()
+
+monthly.plot(kind='line', linewidth=2, color='purple', figsize=(12,5))
+plt.title("Nombre total de titres ajoutés par mois")
+plt.xlabel("Date")
+plt.ylabel("Nombre de titres")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+
+## Conclusion
+
+- Le catalogue Netflix a connu une croissance rapide entre 2015 et 2019.  
+- Les ajouts semblent ralentir depuis 2020, probablement à cause de facteurs externes (pandémie, stratégies de contenu).  
+- Les films et séries ont des tendances d’ajout distinctes à observer plus en détail.
+
+---
+
+Tu peux poursuivre cette analyse en étudiant les genres, pays d’origine, réalisateurs, etc.
+
+
+📆 Analyse mensuelle des ajouts sur Netflix
+Cette section observe l'évolution du nombre de titres ajoutés chaque mois, permettant de détecter des tendances ou des pics saisonniers dans la stratégie de publication de Netflix.
+
+✅ Étapes :
+Créer la colonne year_month (année + mois)
+
+Grouper les données par mois
+
+Générer le graphique
+
+Sauvegarder l’image pour l’intégrer dans le README.md
+
+import os
+import matplotlib.pyplot as plt
+
+# 1. Créer la colonne 'year_month' si elle n'existe pas déjà
+df['year_month'] = df['date_added'].dt.to_period('M')
+
+# 2. Grouper par mois
+monthly = df.groupby('year_month').size()
+
+# 3. Créer un dossier 'images' s'il n'existe pas (pour sauvegarder le graphique)
+os.makedirs('images', exist_ok=True)
+
+# 4. Tracer le graphique
+plt.figure(figsize=(12, 5))
+monthly.plot(kind='line', linewidth=2, color='purple')
+plt.title("📆 Nombre total de titres ajoutés par mois")
+plt.xlabel("Date")
+plt.ylabel("Nombre de titres")
+plt.grid(True)
+plt.tight_layout()
+
+# 5. Sauvegarder l’image
+plt.savefig("images/netflix_mensuel.png", dpi=150, bbox_inches='tight')
+plt.show()
+
+
+
+
+
+
+projet 2
+
+le chargement, nettoyage, exploration et préparation des données
+
+import pandas as pd
+
+# 1. Chargement des données depuis le fichier CSV
+df = pd.read_csv(r"C:\Users\arbi\Desktop\PROJET2\covid_19_clean_complete.csv")
+
+# 2. Affichage des premières lignes pour vérifier le chargement
+print(df.head(10))
+
+# 3. Vérification des types et infos générales
+print(df.info())
+
+# 4. Comptage des valeurs manquantes par colonne
+print(df.isnull().sum())
+
+# 5. Suppression des doublons éventuels
+df = df.drop_duplicates()
+
+# 6. Conversion de la colonne 'Date' en format datetime
+df['Date'] = pd.to_datetime(df['Date'])
+
+# 7. Analyse rapide des valeurs manquantes après nettoyage
+print(df.isnull().sum())
+
+# 8. Si tu veux, tu peux afficher des statistiques descriptives
+print(df.describe())
+
+# 9. Agrégation des données au niveau pays et date (somme des cas)
+df_agg = df.groupby(['Country/Region', 'Date']).agg({
+    'Confirmed': 'sum',
+    'Deaths': 'sum',
+    'Recovered': 'sum',
+    'Active': 'sum'
+}).reset_index()
+
+# 10. Vérification du résultat de l'agrégation
+print(df_agg.head(10))
+
+# 11. Exemple : affichage des 10 pays les plus touchés au dernier jour disponible
+last_date = df_agg['Date'].max()
+df_last = df_agg[df_agg['Date'] == last_date]
+top_countries = df_last.sort_values('Confirmed', ascending=False).head(10)
+print(top_countries[['Country/Region', 'Confirmed', 'Deaths', 'Recovered']])
+
+
+
+
+
+MODELISATION regression lineaire simple
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+# 1. Chargement des données (ici on suppose que le fichier est propre et nettoyé)
+df = pd.read_csv(r"C:\Users\arbi\Desktop\PROJET2\covid_19_clean_complete.csv")
+
+# 2. Nettoyage basique
+df = df.drop_duplicates()
+df['Date'] = pd.to_datetime(df['Date'])
+
+# 3. Agrégation des données par pays et date
+df_agg = df.groupby(['Country/Region', 'Date']).agg({
+    'Confirmed': 'sum',
+    'Deaths': 'sum',
+    'Recovered': 'sum'
+}).reset_index()
+
+# 4. Sélection du pays (exemple: France)
+country = 'France'
+df_country = df_agg[df_agg['Country/Region'] == country].copy()
+df_country = df_country.sort_values('Date')
+
+# 5. Création d'une variable "Day" (nombre de jours depuis la première date)
+df_country['Day'] = (df_country['Date'] - df_country['Date'].min()).dt.days
+
+# 6. Préparation des données pour la modélisation
+X = df_country[['Day']]    # Variable indépendante
+y = df_country['Confirmed'] # Variable cible
+
+# 7. Division des données en train/test (80% train, 20% test)
+split = int(0.8 * len(df_country))
+X_train, X_test = X[:split], X[split:]
+y_train, y_test = y[:split], y[split:]
+
+# 8. Création et entraînement du modèle de régression linéaire
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# 9. Prédiction sur l'ensemble test
+y_pred = model.predict(X_test)
+
+# 10. Évaluation du modèle
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+print(f"Mean Squared Error (MSE): {mse:.2f}")
+print(f"Coefficient de détermination (R^2): {r2:.2f}")
+
+# 11. Visualisation des prédictions vs données réelles
+plt.figure(figsize=(10,6))
+plt.scatter(X_test, y_test, color='blue', label='Données réelles')
+plt.plot(X_test, y_pred, color='red', linewidth=2, label='Prédictions')
+plt.xlabel('Jour depuis début')
+plt.ylabel('Cas confirmés')
+plt.title(f'Prédiction des cas confirmés COVID-19 en {country} (Régression Linéaire)')
+plt.legend()
+plt.show()
+
+# 12. Prédiction pour les 7 prochains jours
+future_days = 7
+last_day = df_country['Day'].max()
+future_X = np.array([last_day + i for i in range(1, future_days + 1)]).reshape(-1,1)
+future_pred = model.predict(future_X)
+
+print("\nPrédictions des cas confirmés pour les prochains jours :")
+for i, pred in enumerate(future_pred, 1):
+    print(f"Jour +{i}: {int(pred)} cas confirmés (prédiction)")
+
+# 13. Visualisation des données réelles + prédictions futures
+plt.figure(figsize=(10,6))
+plt.plot(df_country['Day'], df_country['Confirmed'], label='Données réelles')
+plt.plot(future_X, future_pred, label='Prédictions futures', linestyle='--', color='orange')
+plt.xlabel('Jour depuis début')
+plt.ylabel('Cas confirmés')
+plt.title(f'Prédictions des cas confirmés COVID-19 en {country} (futurs {future_days} jours)')
+plt.legend()
+plt.show()
+
+
+modelisation random forest
+
+
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+# 1. Charger les données
+df = pd.read_csv(r"C:\Users\arbi\Desktop\PROJET2\covid_19_clean_complete.csv")
+
+# 2. Nettoyage de base
+df = df.drop_duplicates()
+df['Date'] = pd.to_datetime(df['Date'])
+
+# 3. Agréger par pays et date
+df_agg = df.groupby(['Country/Region', 'Date']).agg({
+    'Confirmed': 'sum',
+    'Deaths': 'sum',
+    'Recovered': 'sum'
+}).reset_index()
+
+# 4. Filtrer le pays (ex: France)
+country = 'France'
+df_country = df_agg[df_agg['Country/Region'] == country].copy()
+df_country = df_country.sort_values('Date')
+
+# 5. Créer une variable "Day" (jours depuis début)
+df_country['Day'] = (df_country['Date'] - df_country['Date'].min()).dt.days
+
+# 6. Préparer features et cibles multi-sortie
+X = df_country[['Day']]
+y = df_country[['Confirmed', 'Deaths', 'Recovered']]
+
+# 7. Diviser en train/test (80/20)
+split = int(0.8 * len(df_country))
+X_train, X_test = X[:split], X[split:]
+y_train, y_test = y[:split], y[split:]
+
+# 8. Créer et entraîner le modèle Random Forest multi-sortie
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# 9. Prédire sur test
+y_pred = model.predict(X_test)
+
+# 10. Évaluer la performance pour chaque cible
+for i, target in enumerate(['Confirmed', 'Deaths', 'Recovered']):
+    mse = mean_squared_error(y_test.iloc[:, i], y_pred[:, i])
+    r2 = r2_score(y_test.iloc[:, i], y_pred[:, i])
+    print(f"{target} - MSE: {mse:.2f}, R^2: {r2:.2f}")
+
+# 11. Visualiser les prédictions vs réels pour les cas confirmés
+plt.figure(figsize=(12,8))
+plt.subplot(3,1,1)
+plt.plot(X_test, y_test['Confirmed'], label='Réel Confirmed')
+plt.plot(X_test, y_pred[:,0], label='Prédit Confirmed', linestyle='--')
+plt.legend()
+plt.title('Cas confirmés')
+
+plt.subplot(3,1,2)
+plt.plot(X_test, y_test['Deaths'], label='Réel Deaths')
+plt.plot(X_test, y_pred[:,1], label='Prédit Deaths', linestyle='--')
+plt.legend()
+plt.title('Décès')
+
+plt.subplot(3,1,3)
+plt.plot(X_test, y_test['Recovered'], label='Réel Recovered')
+plt.plot(X_test, y_pred[:,2], label='Prédit Recovered', linestyle='--')
+plt.legend()
+plt.title('Récupérés')
+
+plt.xlabel('Jour depuis début')
+plt.tight_layout()
+plt.show()
+
+# 12. Prédictions pour les 7 prochains jours
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Données réelles (derniers jours) pour affichage
+days_real = df_country['Day']
+confirmed_real = df_country['Confirmed']
+deaths_real = df_country['Deaths']
+recovered_real = df_country['Recovered']
+
+# Préparation des jours futurs
+future_days = 7
+last_day = days_real.max()
+future_X = np.array([last_day + i for i in range(1, future_days + 1)]).reshape(-1, 1)
+
+# Prédictions
+future_pred = model.predict(future_X)
+
+# Tracer les graphiques
+plt.figure(figsize=(14, 8))
+
+# Confirmed
+plt.subplot(3,1,1)
+plt.plot(days_real, confirmed_real, label='Confirmés réels')
+plt.plot(future_X.flatten(), future_pred[:, 0], 'r--', label='Confirmés prédits')
+plt.title('Cas Confirmés')
+plt.xlabel('Jour depuis début')
+plt.ylabel('Nombre de cas')
+plt.legend()
+
+# Deaths
+plt.subplot(3,1,2)
+plt.plot(days_real, deaths_real, label='Décès réels')
+plt.plot(future_X.flatten(), future_pred[:, 1], 'r--', label='Décès prédits')
+plt.title('Décès')
+plt.xlabel('Jour depuis début')
+plt.ylabel('Nombre de cas')
+plt.legend()
+
+# Recovered
+plt.subplot(3,1,3)
+plt.plot(days_real, recovered_real, label='Rétablis réels')
+plt.plot(future_X.flatten(), future_pred[:, 2], 'r--', label='Rétablis prédits')
+plt.title('Rétablis')
+plt.xlabel('Jour depuis début')
+plt.ylabel('Nombre de cas')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
