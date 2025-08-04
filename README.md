@@ -1,7 +1,10 @@
 # 🎬 Analyse du catalogue Netflix
 
-Ce projet est une **analyse exploratoire des contenus disponibles sur Netflix** à partir du dataset public `netflix_titles.csv`.  
-Nous examinons l’évolution des ajouts de titres dans le temps, la répartition entre films et séries, ainsi que des tendances mensuelles.
+Contexte
+
+Avec l’essor du streaming, Netflix est devenu une plateforme incontournable offrant une vaste bibliothèque de contenus. Comprendre la dynamique des ajouts de films et séries permet d’analyser les stratégies de contenu et les tendances d’évolution du catalogue.
+
+Ce projet propose une analyse exploratoire du dataset public netflix_titles.csv afin d’examiner comment le catalogue Netflix a évolué dans le temps, en distinguant les types de contenus (films vs séries) et en mettant en lumière des tendances saisonnières.
 
 ---
 
